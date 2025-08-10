@@ -1,12 +1,5 @@
-import { fetchNotes } from '@/lib/api';
-import NotesClient from './Notes.client';
+import { redirect } from 'next/navigation';
 
-export default async function NotesPage() {
-  const initialData = await fetchNotes({
-    page: 1,
-    perPage: 12,
-    search: '',
-  });
-
-  return <NotesClient initialData={initialData} />;
+export default function NotesPage() {
+  redirect('/notes/filter/all');
 }

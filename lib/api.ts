@@ -11,6 +11,8 @@ const instance = axios.create({
   },
 });
 
+export type { Note, NoteTag };
+
 export interface FetchNotesParams {
   page?: number;
   perPage?: number;

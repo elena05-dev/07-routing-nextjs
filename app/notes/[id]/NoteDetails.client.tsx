@@ -1,36 +1,38 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
-import { fetchNoteById } from '@/lib/api';
 import css from './NoteDetails.module.css';
 import type { Note } from '@/types/note';
+import { useRouter } from 'next/navigation';
 
-export default function NoteDetailsClient() {
-  const params = useParams() as { id: string };
-  const noteId = params.id;
+interface Props {
+  note?: Note;
+}
 
-  const {
-    data: note,
-    isLoading,
-    error,
-  } = useQuery<Note>({
-    queryKey: ['note', noteId],
-    queryFn: () => fetchNoteById(noteId),
-    refetchOnMount: false,
-  });
+export default function NoteDetails({ note }: Props) {
+  const router = useRouter();
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error || !note) return <p>Error loading note</p>;
+  if (!note) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className={css.container}>
       <div className={css.item}>
         <div className={css.header}>
           <h2>{note.title}</h2>
+          <span className={css.tag}>{note.tag}</span>
         </div>
-        <p className={css.content}>{note.content}</p>
-        <p className={css.date}>{note.createdAt}</p>
+
+        <div className={css.content}>{note.content}</div>
+
+        <div className={css.date}>
+          Created: {new Date(note.createdAt).toLocaleDateString()} <br />
+          Updated: {new Date(note.updatedAt).toLocaleDateString()}
+        </div>
+
+        <button className={css.backBtn} onClick={() => router.back()}>
+          ← Back
+        </button>
       </div>
     </div>
   );

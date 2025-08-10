@@ -5,7 +5,7 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDebouncedCallback } from 'use-debounce';
 import { fetchNotes } from '@/lib/api';
-import type { FetchNotesResponse } from '@/lib/api';
+import type { FetchNotesResponse, NoteTag } from '@/lib/api';
 
 import NoteList from '@/components/NoteList/NoteList';
 import SearchBox from '@/components/SearchBox/SearchBox';
@@ -15,12 +15,20 @@ import NoteForm from '@/components/NoteForm/NoteForm';
 import css from './NotesPage.module.css';
 
 const PER_PAGE = 12;
+const validTags: NoteTag[] = [
+  'Todo',
+  'Work',
+  'Personal',
+  'Meeting',
+  'Shopping',
+];
 
 interface NotesClientProps {
   initialData: FetchNotesResponse;
+  tag?: NoteTag;
 }
 
-export default function NotesClient({ initialData }: NotesClientProps) {
+export default function NotesClient({ initialData, tag }: NotesClientProps) {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,13 +38,19 @@ export default function NotesClient({ initialData }: NotesClientProps) {
     setSearchQuery(newSearchQuery);
   }, 300);
 
+  const safeTag = tag && validTags.includes(tag) ? tag : undefined;
+
   const { data, isLoading, isError, isFetching } = useQuery<FetchNotesResponse>(
     {
-      queryKey: ['notes', page, searchQuery],
+      queryKey: ['notes', page, searchQuery, safeTag],
       queryFn: () =>
-        fetchNotes({ page, perPage: PER_PAGE, search: searchQuery }),
+        fetchNotes({
+          page,
+          perPage: PER_PAGE,
+          search: searchQuery,
+          tag: safeTag,
+        }),
       placeholderData: keepPreviousData,
-
       initialData: page === 1 && searchQuery === '' ? initialData : undefined,
     },
   );
@@ -69,18 +83,13 @@ export default function NotesClient({ initialData }: NotesClientProps) {
       {isFetching && !isLoading && <p>Updating...</p>}
       {isError && <p>Failed to load notes.</p>}
 
-      {!isLoading &&
-        !isFetching &&
-        data &&
-        (!Array.isArray(data.results) || data.results.length === 0) && (
-          <p>No notes found.</p>
-        )}
+      {!isLoading && !isFetching && data && data.results.length === 0 && (
+        <p>No notes found.</p>
+      )}
 
-      {!isLoading &&
-        !isFetching &&
-        data &&
-        Array.isArray(data.results) &&
-        data.results.length > 0 && <NoteList notes={data.results} />}
+      {!isLoading && !isFetching && data && data.results.length > 0 && (
+        <NoteList notes={data.results} />
+      )}
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
