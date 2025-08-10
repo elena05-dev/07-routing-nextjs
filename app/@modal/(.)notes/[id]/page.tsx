@@ -2,11 +2,13 @@ import { fetchNoteById } from '@/lib/api';
 import NoteModalClient from '@/components/NoteModalClient';
 
 type PageModalNotesProps = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
 export default async function NoteModal({ params }: PageModalNotesProps) {
-  const { id } = await params;
+  const { id } = params;
+
+  console.log('Modal id:', id);
 
   const note = await fetchNoteById(id);
 

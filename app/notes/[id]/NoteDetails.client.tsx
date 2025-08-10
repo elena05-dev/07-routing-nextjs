@@ -4,11 +4,11 @@ import css from './NoteDetails.module.css';
 import type { Note } from '@/types/note';
 import { useRouter } from 'next/navigation';
 
-interface Props {
+interface NoteDetailsProps {
   note?: Note;
 }
 
-export default function NoteDetails({ note }: Props) {
+export default function NoteDetails({ note }: NoteDetailsProps) {
   const router = useRouter();
 
   if (!note) {

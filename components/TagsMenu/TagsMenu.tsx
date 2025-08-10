@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { NoteTag } from '@/types/note';
 import css from './TagsMenu.module.css';
 
@@ -16,8 +17,13 @@ const TAGS: NoteTag[] = [
 
 export default function TagsMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   return (
     <div className={css.menuContainer}>
