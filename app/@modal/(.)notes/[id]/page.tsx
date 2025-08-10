@@ -1,5 +1,5 @@
 import { fetchNoteById } from '@/lib/api';
-import NoteModalClient from '@/components/NoteModalClient';
+import NoteModalClient from '@/app/@modal/(.)notes/[id]/NotePreview.client';
 
 type PageModalNotesProps = {
   params: Promise<{ id: string }>;

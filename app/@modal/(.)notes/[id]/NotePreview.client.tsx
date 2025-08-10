@@ -5,11 +5,11 @@ import NotePreview from '@/components/NotePreview/NotePreview';
 import { useRouter } from 'next/navigation';
 import type { Note } from '@/types/note';
 
-interface NoteModalClientProps {
+interface NotePreviewClientProps {
   note: Note;
 }
 
-export default function NoteModalClient({ note }: NoteModalClientProps) {
+export default function NoteModalClient({ note }: NotePreviewClientProps) {
   const router = useRouter();
 
   const onClose = () => {
