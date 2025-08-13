@@ -38,7 +38,8 @@ export default function NotesClient({ initialData, tag }: NotesClientProps) {
     setSearchQuery(newSearchQuery);
   }, 300);
 
-  const safeTag = tag && validTags.includes(tag) ? tag : undefined;
+  const safeTag =
+    tag && tag !== 'All' && validTags.includes(tag) ? tag : undefined;
 
   const { data, isLoading, isError, isFetching } = useQuery<FetchNotesResponse>(
     {
